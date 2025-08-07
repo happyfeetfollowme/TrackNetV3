@@ -14,7 +14,7 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
             Dataset description: https://hackmd.io/Nf8Rh1NrSrqNUzmO0sQKZw
     """
     def __init__(self,
-        root_dir=data_dir,
+        root_dir='data',
         split='train',
         seq_len=8,
         sliding_step=1,

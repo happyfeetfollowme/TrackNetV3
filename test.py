@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 
-from dataset import Shuttlecock_Trajectory_Dataset, data_dir
+from dataset import Shuttlecock_Trajectory_Dataset
 from utils.general import *
 from utils.metric import *
 
