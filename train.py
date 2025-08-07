@@ -196,6 +196,7 @@ if __name__ == '__main__':
     parser.add_argument('--save_dir', type=str, default='exp', help='directory to save the checkpoints and prediction result')
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('--verbose', action='store_true', default=False)
+    parser.add_argument('--data_dir', type=str, default='data', help='root directory of the dataset')
     args = parser.parse_args()
     param_dict = vars(args)
 
@@ -227,8 +228,8 @@ if __name__ == '__main__':
     print(f'Parameters: {param_dict}')
     print(f'Load dataset...')
     data_mode = 'heatmap' if args.model_name == 'TrackNet' else 'coordinate'
-    train_dataset = Shuttlecock_Trajectory_Dataset(split='train', seq_len=args.seq_len, sliding_step=1, data_mode=data_mode, bg_mode=args.bg_mode, frame_alpha=args.frame_alpha, debug=args.debug)
-    val_dataset = Shuttlecock_Trajectory_Dataset(split='val', seq_len=args.seq_len, sliding_step=args.seq_len, data_mode=data_mode, bg_mode=args.bg_mode, debug=args.debug)
+    train_dataset = Shuttlecock_Trajectory_Dataset(root_dir=args.data_dir, split='train', seq_len=args.seq_len, sliding_step=1, data_mode=data_mode, bg_mode=args.bg_mode, frame_alpha=args.frame_alpha, debug=args.debug)
+    val_dataset = Shuttlecock_Trajectory_Dataset(root_dir=args.data_dir, split='val', seq_len=args.seq_len, sliding_step=args.seq_len, data_mode=data_mode, bg_mode=args.bg_mode, debug=args.debug)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=num_workers, drop_last=True, pin_memory=True)
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=num_workers, drop_last=False, pin_memory=True)
 

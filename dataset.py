@@ -9,8 +9,6 @@ from tqdm import tqdm
 from torch.utils.data import Dataset, IterableDataset
 from utils.general import get_rally_dirs, get_match_median, HEIGHT, WIDTH, SIGMA, IMG_FORMAT, load_median
 
-data_dir = 'data'
-
 class Shuttlecock_Trajectory_Dataset(Dataset):
     """ Shuttlecock_Trajectory_Dataset
             Dataset description: https://hackmd.io/Nf8Rh1NrSrqNUzmO0sQKZw
