@@ -60,8 +60,15 @@ if not os.path.exists(os.path.join(data_dir, 'val')):
                     os.path.join(data_dir, 'val', match_dir, 'video', f'{rally_id}.mp4'))
         shutil.move(os.path.join(data_dir, 'train', match_dir, 'frame', rally_id),
                     os.path.join(data_dir, 'val', match_dir, 'frame', rally_id))
-        shutil.copy(os.path.join(data_dir, 'train', match_dir, 'median.npz'),
-                    os.path.join(data_dir, 'val', match_dir, 'median.npz'))
+        # Copy median file (npz or png)
+        median_npz = os.path.join(data_dir, 'train', match_dir, 'median.npz')
+        median_png = os.path.join(data_dir, 'train', match_dir, 'median.png')
+        val_npz = os.path.join(data_dir, 'val', match_dir, 'median.npz')
+        val_png = os.path.join(data_dir, 'val', match_dir, 'median.png')
+        if os.path.exists(median_npz):
+            shutil.copy(median_npz, val_npz)
+        if os.path.exists(median_png):
+            shutil.copy(median_png, val_png)
 
 # Plot median frames, save at <data_dir>/median
 plot_median_files(data_dir)

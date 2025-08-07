@@ -88,16 +88,18 @@ def plot_median_files(data_dir):
         for match_dir in match_dirs:
             file_format_str = os.path.join('{}', 'match{}')
             _, match_id = parse.parse(file_format_str, match_dir)
-            if os.path.exists(os.path.join(data_dir, split, f'match{match_id}', 'median.npz')):
-                median = np.load(os.path.join(data_dir, split, f'match{match_id}', 'median.npz'))['median'][..., ::-1] # BGR to RGB
+            median_path = os.path.join(data_dir, split, f'match{match_id}', 'median.npz')
+            if os.path.exists(median_path) or os.path.exists(median_path.replace('.npz', '.png')):
+                median = load_median(median_path)[..., ::-1] # BGR to RGB if needed
                 cv2.imwrite(os.path.join(data_dir, 'median', f'{split}_m{match_id}.{IMG_FORMAT}'), median)
             rally_dirs = list_dirs(os.path.join(match_dir, 'frame'))
             # For each rally
             for rally_dir in rally_dirs:
                 file_format_str = os.path.join('{}', 'frame', '{}')
                 _, rally_id = parse.parse(file_format_str, rally_dir)
-                if os.path.exists(os.path.join(rally_dir, 'median.npz')):
-                    median = np.load(os.path.join(rally_dir, 'median.npz'))['median'][..., ::-1] # BGR to RGB
+                median_path = os.path.join(rally_dir, 'median.npz')
+                if os.path.exists(median_path) or os.path.exists(median_path.replace('.npz', '.png')):
+                    median = load_median(median_path)[..., ::-1] # BGR to RGB if needed
                     cv2.imwrite(os.path.join(data_dir, 'median', f'{split}_m{match_id}_r{rally_id}.{IMG_FORMAT}'), median)
 
 def plot_heatmap_pred_sample(x, y, y_pred, c, bg_mode, save_dir):

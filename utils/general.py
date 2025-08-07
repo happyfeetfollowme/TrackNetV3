@@ -485,9 +485,10 @@ def get_match_median(match_dir):
         _, rally_id = parse.parse(file_format_str, rally_dir)
 
         # Load rally median, if not exist, generate it
-        if not os.path.exists(os.path.join(rally_dir, 'median.npz')):
+        median_path = os.path.join(rally_dir, 'median.npz')
+        if not os.path.exists(median_path) and not os.path.exists(median_path.replace('.npz', '.png')):
             get_rally_median(os.path.join(match_dir, 'video', f'{rally_id}.mp4'))
-        frame = np.load(os.path.join(rally_dir, 'median.npz'))['median']
+        frame = load_median(median_path)
         medians.append(frame)
     
     # Calculate the median of all rally medians
@@ -535,3 +536,22 @@ def re_generate_median_files(data_dir):
                 get_rally_median(video_file)
             get_match_median(match_dir)
             print(f'Finish processing {match_name}.')
+
+def load_median(median_path):
+    """Load median from .png or .npz file (prefers .png if exists)."""
+    png_path = median_path.replace('.npz', '.png')
+    if os.path.exists(png_path):
+        median = cv2.imread(png_path)
+        if median is None:
+            raise IOError(f'Failed to load median image: {png_path}')
+        return median
+    elif os.path.exists(median_path):
+        arr = np.load(median_path)
+        if 'median' in arr:
+            return arr['median']
+        elif 'arr_0' in arr:
+            return arr['arr_0']
+        else:
+            raise KeyError(f'No median key in {median_path}')
+    else:
+        raise FileNotFoundError(f'No median file found at {median_path} or {png_path}')

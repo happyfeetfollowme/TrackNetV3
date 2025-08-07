@@ -7,7 +7,7 @@ import pandas as pd
 from PIL import Image
 from tqdm import tqdm
 from torch.utils.data import Dataset, IterableDataset
-from utils.general import get_rally_dirs, get_match_median, HEIGHT, WIDTH, SIGMA, IMG_FORMAT
+from utils.general import get_rally_dirs, get_match_median, HEIGHT, WIDTH, SIGMA, IMG_FORMAT, load_median
 
 data_dir = 'data'
 
@@ -483,10 +483,9 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
 
                 if self.bg_mode:
                     file_format_str = os.path.join('{}', 'frame', '{}','{}.'+IMG_FORMAT)
-                    match_dir, rally_id, _ = parse.parse(file_format_str, frame_file[0])#'{}/frame/{}/{}.png', frame_file[0])
-                    median_file = os.path.join(match_dir, 'median.npz') if os.path.exists(os.path.join(match_dir, 'median.npz')) else os.path.join(match_dir, 'frame', rally_id, 'median.npz')
-                    assert os.path.exists(median_file), f'{median_file} does not exist.'
-                    median_img = np.load(median_file)['median']
+                    match_dir, rally_id, _ = parse.parse(file_format_str, frame_file[0])
+                    median_file = os.path.join(match_dir, 'median.npz')
+                    median_img = load_median(median_file)
                 
                 # Frame mixup
                 # Sample the mixing ratio
@@ -603,10 +602,9 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
                 # Read median image
                 if self.bg_mode:
                     file_format_str = os.path.join('{}', 'frame', '{}','{}.'+IMG_FORMAT)
-                    match_dir, rally_id, _ = parse.parse(file_format_str, frame_file[0])#'{}/frame/{}/{}.png', frame_file[0])
-                    median_file = os.path.join(match_dir, 'median.npz') if os.path.exists(os.path.join(match_dir, 'median.npz')) else os.path.join(match_dir, 'frame', rally_id, 'median.npz')
-                    assert os.path.exists(median_file), f'{median_file} does not exist.'
-                    median_img = np.load(median_file)['median']
+                    match_dir, rally_id, _ = parse.parse(file_format_str, frame_file[0])
+                    median_file = os.path.join(match_dir, 'median.npz')
+                    median_img = load_median(median_file)
 
                 frames = np.array([]).reshape(0, self.HEIGHT, self.WIDTH)
                 heatmaps = np.array([]).reshape(0, self.HEIGHT, self.WIDTH)
@@ -811,4 +809,3 @@ class Video_IterableDataset(IterableDataset):
         frames /= 255.
         return frames
 
-        
